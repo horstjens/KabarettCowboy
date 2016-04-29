@@ -9,7 +9,6 @@ this example is tested using python 3.4 and pygame
 needs: file 'babytux.png' in subfolder 'data'
 """
 
-#the next line is only needed for python2.x and not necessary for python3.x
 from __future__ import print_function, division
 
 import pygame 
@@ -18,12 +17,12 @@ import random
 import os
 import sys
 
-GRAD = math.pi / 180 # 2 * pi / 360   # math module needs Radiant instead of Grad
+GRAD = math.pi / 180 
 
 class FlyingObject(pygame.sprite.Sprite):
     """base class for sprites. this class inherits from pygames sprite class"""
-    number = 0 # current number for new Sprite
-    numbers = {} # {number: Sprite}
+    number = 0 
+    numbers = {} 
     
     
     def __init__(self, radius = 50, color=None, x=320, y=240,
@@ -31,10 +30,9 @@ class FlyingObject(pygame.sprite.Sprite):
                  hitpoints=1, damage=None, bossnumber = None,
                  wallsound=None, imagenr=None,):
         """create a (black) surface and paint a blue ball on it"""
-        self._layer = layer   #self.layer = layer
-        pygame.sprite.Sprite.__init__(self, self.groups) #call parent class. NEVER FORGET !
-        # self groups is set in PygView.paint()
-        self.number = FlyingObject.number # unique number for each sprite
+        self._layer = layer   
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.number = FlyingObject.number 
         FlyingObject.number += 1 
         FlyingObject.numbers[self.number] = self
         self.radius = radius
@@ -47,15 +45,14 @@ class FlyingObject(pygame.sprite.Sprite):
         self.hitpointsfull = hitpoints
         self.width = 2 * self.radius
         self.height = 2 * self.radius
-        self.turnspeed = 5   # onnly important for rotating
-        self.speed = 20      # only important for ddx and ddy
+        self.turnspeed = 5   
+        self.speed = 20     
         self.angle = 0
-        self.x = x           # position
+        self.x = x          
         self.y = y
-        self.dx = dx         # movement
+        self.dx = dx        
         self.dy = dy
-        self.ddx = 0 # acceleration and slowing down. set dx and dy to 0 first!
-        self.ddy = 0
+        self.ddx = 0         self.ddy = 0
         self.killwall=False
         self.friction = friction # 1.0 means no friction at all
         if color is None: # create random color if no color is given
@@ -286,7 +283,7 @@ class Bullet(FlyingObject):
     def create_image(self):
         self.image = pygame.Surface((self.width,self.height))    
         pygame.draw.circle(self.image, self.color, (self.radius, self.radius), self.radius) # draw blue filled circle on ball surface
-        self.image.set_colorkey((255,255,255))
+        self.image.set_colorkey((0,0,0))
         self.image = self.image.convert_alpha() # faster blitting with transparent color
         self.rect= self.image.get_rect()
         
@@ -349,26 +346,31 @@ class Tux(FlyingObject):
          
     def make_move(self):
         if self.check_move_is_legal():
+            if self.nextmove == "Wait":
+                #if random.random() < 0.5:
+                self.nextmove = "Wait"
+                #else:
+                #      self.nextmove = "shoot"
             if self.nextmove == "Up":
                 self.y -= PygView.grid
                 self.angle = 0
-            if self.nextmove == "Down":
+            elif self.nextmove == "Down":
                 self.y += PygView.grid
                 self.angle = 180
-            if self.nextmove == "Right":
+            elif self.nextmove == "Right":
                 self.x += PygView.grid
                 self.angle = 270
-            if self.nextmove == "Left":
+            elif self.nextmove == "Left":
                 self.x -= PygView.grid
                 self.angle=90
-            if self.nextmove == "shoot":
+            elif self.nextmove == "shoot":
                 Bullet(radius=5, x=self.x, y=self.y,
                        dx=-math.sin(self.angle*GRAD)*600,
                        dy=-math.cos(self.angle*GRAD)*600,
                        bossnumber=self.number,
                        color = (255,255,255))      
                 # self.shootsound.play()
-        self.nextmove = "shoot"
+        self.nextmove = "Wait"
              
 
                      
@@ -641,8 +643,8 @@ class PygView(object):
                     if event.key == pygame.K_d:
                         self.tux1.nextmove = "Right"
                         #self.tux1.angle = 270
-                    if event.key == pygame.K_SPACE:
-                        self.tux1.nextmove = "shoot"
+                    #if event.key == pygame.K_SPACE:
+                     #   self.tux1.nextmove = "shoot"
                     if event.key == pygame.K_UP:
                         self.tux2.nextmove = "Up"
                         #self.tux2.angle = 0
@@ -655,8 +657,8 @@ class PygView(object):
                     if event.key == pygame.K_RIGHT:
                         self.tux2.nextmove = "Right"
                         #self.tux2.angle = 270
-                    if event.key == pygame.K_m:
-                        self.tux2.nextmove = "shoot"
+                    #if event.key == pygame.K_m:
+                     #   self.tux2.nextmove = "shoot"
                         
                     
             # ------ pressed keys key handler ------------
@@ -761,9 +763,11 @@ class PygView(object):
             if self.nextturn:
                 for tux in self.tuxgroup:  
                     tux.make_move()  
-            if self.nextturn:
-                for tux2 in self.tuxgroup:  
-                    tux2.make_move()
+                    if tux.nextmove == "Wait":
+                        tux.nextmove = "shoot"
+            #if self.nextturn:
+            #    for tux2 in self.tuxgroup:  
+            #        tux2.make_move()
                      
                 
             #  -------- draw trail for tux ----
@@ -794,7 +798,7 @@ class PygView(object):
                   oldy = b.y
                   for pos in b.trail:
                      # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
-                     pygame.draw.line(self.screen, (color,255,255), (oldx, oldy), (pos[0],pos[1]), color // 100 +5)
+                     pygame.draw.line(self.screen, (color,255,255), (oldx, oldy), (pos[0],pos[1]), color // 100 +10)
                      oldx = pos[0]
                      oldy = pos[1]
                      color-=1
