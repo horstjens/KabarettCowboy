@@ -52,7 +52,8 @@ class FlyingObject(pygame.sprite.Sprite):
         self.y = y
         self.dx = dx        
         self.dy = dy
-        self.ddx = 0         self.ddy = 0
+        self.ddx = 0         
+        self.ddy = 0
         self.killwall=False
         self.friction = friction # 1.0 means no friction at all
         if color is None: # create random color if no color is given
