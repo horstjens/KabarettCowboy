@@ -52,7 +52,8 @@ class FlyingObject(pygame.sprite.Sprite):
         self.y = y
         self.dx = dx        
         self.dy = dy
-        self.ddx = 0         self.ddy = 0
+        self.ddx = 0         
+        self.ddy = 0
         self.killwall=False
         self.friction = friction # 1.0 means no friction at all
         if color is None: # create random color if no color is given
@@ -573,10 +574,14 @@ class PygView(object):
         self.ball2 = Ball(x=200, y=100) # create another Ball Sprite
         self.tux1 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*0.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0) 
         self.tux2 = Tux(x=self.grid*12+self.grid//2, y=self.grid*12+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
+        self.tux3 = Tux(x=self.grid*7+self.grid//1, y=self.grid*7+self.grid//1, dx=0, dy=0, layer=5, imagenr=0) 
+        self.tux4 = Tux(x=self.grid*4+self.grid//2, y=self.grid*4+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
         # over balls layer
         # ---- assign sound effects to sprites -----
         self.tux1.wallsound = bumpsound
         self.tux2.wallsound = bumpsound
+        self.tux3.wallsound = bumpsound
+        self.tux4.wallsound = bumpsound
 
     def run(self):
         """The mainloop"""
@@ -776,7 +781,7 @@ class PygView(object):
             oldy = self.tux1.y
             for pos in self.tux1.trail:
                 # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
-                pygame.draw.line(self.screen, (color,214,24), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
+                pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
                 oldx = pos[0]
                 oldy = pos[1]
                 color-=1
@@ -786,7 +791,27 @@ class PygView(object):
             oldy = self.tux2.y
             for pos in self.tux2.trail:
                 # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
-                pygame.draw.line(self.screen, (0,55,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
+                pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
+                oldx = pos[0]
+                oldy = pos[1]
+                color-=1
+            #
+            color = 255
+            oldx = self.tux3.x
+            oldy = self.tux3.y
+            for pos in self.tux3.trail:
+                # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
+                pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
+                oldx = pos[0]
+                oldy = pos[1]
+                color-=1
+            #
+            color = 255
+            oldx = self.tux4.x
+            oldy = self.tux4.y
+            for pos in self.tux4.trail:
+                # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
+                pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
                 oldx = pos[0]
                 oldy = pos[1]
                 color-=1
