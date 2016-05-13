@@ -569,10 +569,10 @@ class PygView(object):
         self.reflect4.image=PygView.images[6]
         self.ball1 = Ball(x=100, y=100) # creating a Ball Sprite
         self.ball2 = Ball(x=200, y=100) # create another Ball Sprite
-        self.tux1 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*0.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0)
+        self.tux1 = Tux(x=self.grid*1.5+self.grid//1, y=self.grid*0.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0)
         self.tux2 = Tux(x=self.grid*12+self.grid//2, y=self.grid*12+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
-        self.tux3 = Tux(x=self.grid*7+self.grid//1, y=self.grid*7+self.grid//1, dx=0, dy=0, layer=5, imagenr=0) 
-        self.tux4 = Tux(x=self.grid*4+self.grid//2, y=self.grid*4+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
+        self.tux3 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*12+self.grid//1, dx=0, dy=0, layer=5, imagenr=0) 
+        self.tux4 = Tux(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
         # over balls layer
         # ---- assign sound effects to sprites -----
         self.tux1.wallsound = bumpsound
