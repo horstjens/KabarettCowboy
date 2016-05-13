@@ -774,15 +774,14 @@ class PygView(object):
             if self.nextturn:
                 for tux in self.tuxgroup:
                     tux.make_move()
-            if self.nextturn:
-                for tux2 in self.tuxgroup:
-                    tux2.make_move()
+            #if self.nextturn:
+            #    for tux2 in self.tuxgroup:
+            #        tux2.make_move()
 
 
             #  -------- draw trail for tux ----
             color = 255
-            oldx = self.tux1.x
-            oldy = self.tux1.y
+a            oldy = self.tux1.y
             for pos in self.tux1.trail:
                 # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
                 pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
