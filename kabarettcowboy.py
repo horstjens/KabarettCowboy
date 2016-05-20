@@ -781,7 +781,8 @@ class PygView(object):
 
             #  -------- draw trail for tux ----
             color = 255
-a            oldy = self.tux1.y
+            oldx = self.tux1.x
+            oldy = self.tux1.y
             for pos in self.tux1.trail:
                 # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
                 pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
