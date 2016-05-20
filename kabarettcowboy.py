@@ -29,7 +29,7 @@ class FlyingObject(pygame.sprite.Sprite):
     def __init__(self, radius = 50, color=None, x=320, y=240,
                  dx=0, dy=0, layer=4, friction=1.0, mass=None,
                  hitpoints=1, damage=None, bossnumber = None,
-                 wallsound=None, imagenr=None,):
+                 wallsound=None, imagenr=None,angle = 0):
         """create a (black) surface and paint a blue ball on it"""
         self._layer = layer   #self.layer = layer
         pygame.sprite.Sprite.__init__(self, self.groups) #call parent class. NEVER FORGET !
@@ -49,7 +49,7 @@ class FlyingObject(pygame.sprite.Sprite):
         self.height = 2 * self.radius
         self.turnspeed = 5   # onnly important for rotating
         self.speed = 20      # only important for ddx and ddy
-        self.angle = 0
+        self.angle = angle
         self.x = x           # position
         self.y = y
         self.dx = dx         # movement
@@ -302,6 +302,7 @@ class Tux(FlyingObject):
         self.radius = 16 # image is 32x36 pixel
         self.dx = 0
         self.dy = 0
+        
 
         Hitpointbar(self.number)
         self.trail = []  #
@@ -513,6 +514,9 @@ class PygView(object):
             # load sprite resources here
             PygView.images.append(pygame.image.load(os.path.join("data", "GPS.png")))     #0 this is PygView.images[0]
             PygView.images.append(pygame.image.load(os.path.join("data", "GPSblau.png"))) #1 this is PygView.images[1]
+            # Player 1+2 skalieren
+            PygView.images[0] = pygame.transform.scale(PygView.images[0], (self.grid*1,self.grid*1))
+            PygView.images[1] = pygame.transform.scale(PygView.images[1], (self.grid*1,self.grid*1))
 
             PygView.images.append(pygame.image.load(os.path.join("data", "4.png")))       #2 this is viereck
 
@@ -528,6 +532,12 @@ class PygView(object):
             PygView.images[4]=pygame.transform.rotate(PygView.images[4],90)
             PygView.images[5]=pygame.transform.rotate(PygView.images[5],270)
             PygView.images[6]=pygame.transform.rotate(PygView.images[6],0)
+            # Player 3+4 image
+            PygView.images.append(pygame.image.load(os.path.join("data", "GPSgruen.png"))) #7 this is PygView.images
+            PygView.images.append(pygame.image.load(os.path.join("data", "GPSgrau.png"))) #8 this is PygView.images
+            # Player 3+4 skalieren
+            PygView.images[7] = pygame.transform.scale(PygView.images[7], (self.grid*1,self.grid*1))
+            PygView.images[8] = pygame.transform.scale(PygView.images[8], (self.grid*1,self.grid*1))
 
 
 
@@ -569,10 +579,10 @@ class PygView(object):
         self.reflect4.image=PygView.images[6]
         self.ball1 = Ball(x=100, y=100) # creating a Ball Sprite
         self.ball2 = Ball(x=200, y=100) # create another Ball Sprite
-        self.tux1 = Tux(x=self.grid*1.5+self.grid//1, y=self.grid*0.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0)
-        self.tux2 = Tux(x=self.grid*12+self.grid//2, y=self.grid*12+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
-        self.tux3 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*11.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0) 
-        self.tux4 = Tux(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
+        self.tux1 = Tux(x=self.grid*1.5+self.grid//1, y=self.grid*1.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0,angle = 180)
+        self.tux2 = Tux(x=self.grid*12+self.grid//2, y=self.grid*11+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
+        self.tux3 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*11.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=7) 
+        self.tux4 = Tux(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 8,angle = 180)
         # over balls layer
         # ---- assign sound effects to sprites -----
         self.tux1.wallsound = bumpsound
@@ -600,10 +610,10 @@ class PygView(object):
             self.screen.blit(self.background, (0, 0))  # clear screen
             # ------ write text below sprites -------
             write(self.screen, "FPS: {:6.3}  PLAYTIME: {:6.3} SECONDS".format(
-                           self.clock.get_fps(), self.playtime), y=50, color = (100, 0, 200))
+                           self.clock.get_fps(), self.playtime), y=20, color = (28, 232, 221))
             #write(self.screen, "player1: {}".format(self.tux1.nextmove), y=70)
             # ----- turn indicator
-            write(self.screen, "next turn in {:6.3} seconds".format(self.turn_duration - self.turntime), y=20,color = (100, 0, 200))
+            #write(self.screen, "next turn in {:6.3} seconds".format(self.turn_duration - self.turntime), y=20,color = (100, 0, 200))
             #pygame.draw.rect(self.screen, (0,200,0), (351,300, int(43*(self.turn_duration - self.turntime)), 100))
             #pygame.draw.rect(self.screen, (0,200,0), (351,300, int(-43*(self.turn_duration - self.turntime)), 100))
             # ------- events -------------
@@ -784,7 +794,7 @@ class PygView(object):
             self.bulletreflectorgroup.update(seconds) # would also work with ballgroup
             self.bulletreflectorgroup.draw(self.screen)
             #wabbbble
-            write(self.screen, "next turn in {:6.3} seconds".format(self.turn_duration - self.turntime), y=20,color = (100, 0, 200))
+            #write(self.screen, "next turn in {:6.3} seconds".format(self.turn_duration - self.turntime), y=20,color = (100, 0, 200))
             clown = (self.turn_duration - self.turntime) *100
             clown=max(0,clown)
             #print(clown)
@@ -856,7 +866,7 @@ class PygView(object):
             # -------  write text over everything  -----------------
             #write(self.screen, "Press b to add another ball", x=self.width//2, y=250, center=True)
             #write(self.screen, "Press c to add another bullet", x=self.width//2, y=275, center=True)
-            write(self.screen, "Press w,a,s,d and R,L,U,D to steer player1 and player2", x=self.width//2, y=660, center=True, color=(100,0,200))
+            #write(self.screen, "Press w,a,s,d and R,L,U,D to steer player1 and player2", x=self.width//2, y=660, center=True, color=(100,0,200))
             self.allgroup.update(seconds) # would also work with ballgroup
             self.hitpointbargroup.update(seconds) # to avoid "bouncing" hitpointbars
             self.allgroup.draw(self.screen)
