@@ -452,7 +452,7 @@ class PygView(object):
     playerminwidth = 0
     images = []
 
-    def __init__(self, width=640, height=400, fps=30, grid=10, bpm=80):
+    def __init__(self, width=640, height=400, fps=60, grid=10, bpm=80):
         """Initialize pygame, window, background, font,..."""
         pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
         pygame.init()
@@ -513,9 +513,6 @@ class PygView(object):
             # load sprite resources here
             PygView.images.append(pygame.image.load(os.path.join("data", "GPS.png")))     #0 this is PygView.images[0]
             PygView.images.append(pygame.image.load(os.path.join("data", "GPSblau.png"))) #1 this is PygView.images[1]
-            # Player 1+2 skalieren
-            PygView.images[0] = pygame.transform.scale(PygView.images[0], (self.grid*1,self.grid*1))
-            PygView.images[1] = pygame.transform.scale(PygView.images[1], (self.grid*1,self.grid*1))
 
             PygView.images.append(pygame.image.load(os.path.join("data", "4.png")))       #2 this is viereck
 
@@ -531,12 +528,6 @@ class PygView(object):
             PygView.images[4]=pygame.transform.rotate(PygView.images[4],90)
             PygView.images[5]=pygame.transform.rotate(PygView.images[5],270)
             PygView.images[6]=pygame.transform.rotate(PygView.images[6],0)
-            # Player 3+4 image
-            PygView.images.append(pygame.image.load(os.path.join("data", "GPSgruen.png"))) #7 this is PygView.images
-            PygView.images.append(pygame.image.load(os.path.join("data", "GPSgrau.png"))) #8 this is PygView.images
-            # Player 3+4 skalieren
-            PygView.images[7] = pygame.transform.scale(PygView.images[7], (self.grid*1,self.grid*1))
-            PygView.images[8] = pygame.transform.scale(PygView.images[8], (self.grid*1,self.grid*1))
 
 
 
@@ -564,7 +555,7 @@ class PygView(object):
         Ball.groups = self.allgroup, self.ballgroup # each Ball object belong to those groups
         Bullet.groups = self.allgroup, self.bulletgroup
         Square.groups = self.allgroup, self.bulleteatergroup
-        Reflector.groups = self.allgroup, self.bulletreflectorgroup
+        Reflector.groups =  self.bulletreflectorgroup
         self.square1 = Square(500,500)
         self.square2 = Square(200,500)
         self.square3 = Square(500,200)
@@ -580,8 +571,8 @@ class PygView(object):
         self.ball2 = Ball(x=200, y=100) # create another Ball Sprite
         self.tux1 = Tux(x=self.grid*1.5+self.grid//1, y=self.grid*0.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0)
         self.tux2 = Tux(x=self.grid*12+self.grid//2, y=self.grid*12+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
-        self.tux3 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*11.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=7) 
-        self.tux4 = Tux(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 8)
+        self.tux3 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*11.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0) 
+        self.tux4 = Tux(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
         # over balls layer
         # ---- assign sound effects to sprites -----
         self.tux1.wallsound = bumpsound
@@ -667,9 +658,33 @@ class PygView(object):
                         #self.tux2.angle = 90
                     if event.key == pygame.K_RIGHT:
                         self.tux2.nextmove = "Right"
+                        
+                    if event.key == pygame.K_KP8:
+                        self.tux3.nextmove = "Up"
+                        #self.tux1.angle = 0
+                    if event.key == pygame.K_KP2:
+                        self.tux3.nextmove = "Down"
+                        #self.tux1.angle = 180
+                    if event.key == pygame.K_KP4:
+                        self.tux3.nextmove = "Left"
+                        #self.tux1.angle = 90
+                    if event.key == pygame.K_KP6:
+                        self.tux3.nextmove = "Right"
+                        #self.tux1.angle = 270
+                    if event.key == pygame.K_SPACE:
+                        self.tux4.nextmove = "shoot"
+                    if event.key == pygame.K_i:
+                        self.tux4.nextmove = "Up"
+                        #self.tux2.angle = 0
+                    if event.key == pygame.K_k:
+                        self.tux4.nextmove = "Down"
+                        #self.tux2.angle = 180
+                    if event.key == pygame.K_j:
+                        self.tux4.nextmove = "Left"
+                        #self.tux2.angle = 90
+                    if event.key == pygame.K_l:
+                        self.tux4.nextmove = "Right"
                         #self.tux2.angle = 270
-                    if event.key == pygame.K_m:
-                        self.tux2.nextmove = "shoot"
 
 
             # ------ pressed keys key handler ------------
@@ -766,10 +781,8 @@ class PygView(object):
 
             # ----------- clear, draw , update, flip -----------------
             #self.allgroup.clear(screen, background)
-            self.allgroup.update(seconds) # would also work with ballgroup
-            self.hitpointbargroup.update(seconds) # to avoid "bouncing" hitpointbars
-            self.allgroup.draw(self.screen)
-            self.hitpointbargroup.draw(self.screen)
+            self.bulletreflectorgroup.update(seconds) # would also work with ballgroup
+            self.bulletreflectorgroup.draw(self.screen)
             #wabbbble
             write(self.screen, "next turn in {:6.3} seconds".format(self.turn_duration - self.turntime), y=20,color = (100, 0, 200))
             clown = (self.turn_duration - self.turntime) *100
@@ -844,7 +857,10 @@ class PygView(object):
             #write(self.screen, "Press b to add another ball", x=self.width//2, y=250, center=True)
             #write(self.screen, "Press c to add another bullet", x=self.width//2, y=275, center=True)
             write(self.screen, "Press w,a,s,d and R,L,U,D to steer player1 and player2", x=self.width//2, y=660, center=True, color=(100,0,200))
-
+            self.allgroup.update(seconds) # would also work with ballgroup
+            self.hitpointbargroup.update(seconds) # to avoid "bouncing" hitpointbars
+            self.allgroup.draw(self.screen)
+            self.hitpointbargroup.draw(self.screen)
             # --------- next frame ---------------
             pygame.display.flip()
         pygame.quit()
