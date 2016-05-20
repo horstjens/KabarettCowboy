@@ -528,6 +528,9 @@ class PygView(object):
             PygView.images[4]=pygame.transform.rotate(PygView.images[4],90)
             PygView.images[5]=pygame.transform.rotate(PygView.images[5],270)
             PygView.images[6]=pygame.transform.rotate(PygView.images[6],0)
+            # Player 3+4 image
+            PygView.images.append(pygame.image.load(os.path.join("data", "GPSgruen.png"))) #7 this is PygView.images
+            PygView.images.append(pygame.image.load(os.path.join("data", "GPSgrau.png"))) #8 this is PygView.images
 
 
 
