@@ -513,6 +513,9 @@ class PygView(object):
             # load sprite resources here
             PygView.images.append(pygame.image.load(os.path.join("data", "GPS.png")))     #0 this is PygView.images[0]
             PygView.images.append(pygame.image.load(os.path.join("data", "GPSblau.png"))) #1 this is PygView.images[1]
+            # Player 1+2 skalieren
+            PygView.images[0] = pygame.transform.scale(PygView.images[0], (self.grid*1,self.grid*1))
+            PygView.images[1] = pygame.transform.scale(PygView.images[1], (self.grid*1,self.grid*1))
 
             PygView.images.append(pygame.image.load(os.path.join("data", "4.png")))       #2 this is viereck
 
@@ -531,6 +534,9 @@ class PygView(object):
             # Player 3+4 image
             PygView.images.append(pygame.image.load(os.path.join("data", "GPSgruen.png"))) #7 this is PygView.images
             PygView.images.append(pygame.image.load(os.path.join("data", "GPSgrau.png"))) #8 this is PygView.images
+            # Player 3+4 skalieren
+            PygView.images[7] = pygame.transform.scale(PygView.images[7], (self.grid*1,self.grid*1))
+            PygView.images[8] = pygame.transform.scale(PygView.images[8], (self.grid*1,self.grid*1))
 
 
 
@@ -574,8 +580,8 @@ class PygView(object):
         self.ball2 = Ball(x=200, y=100) # create another Ball Sprite
         self.tux1 = Tux(x=self.grid*1.5+self.grid//1, y=self.grid*0.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0)
         self.tux2 = Tux(x=self.grid*12+self.grid//2, y=self.grid*12+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
-        self.tux3 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*12+self.grid//1, dx=0, dy=0, layer=5, imagenr=0) 
-        self.tux4 = Tux(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
+        self.tux3 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*11.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=7) 
+        self.tux4 = Tux(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 8)
         # over balls layer
         # ---- assign sound effects to sprites -----
         self.tux1.wallsound = bumpsound
