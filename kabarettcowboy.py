@@ -6,7 +6,7 @@ contact: see http://spielend-programmieren.at/de:kontakt
 license: gpl, see http://www.gnu.org/licenses/gpl-3.0.de.html
 idea: template to show how to move and rotate pygames Sprites
 this example is tested using python 3.4 and pygame
-needs: file 'babytux.png' in subfolder 'data'
+needs: file 'babyplayer.png' in subfolder 'data'
 """
 
 #the next line is only needed for python2.x and not necessary for python3.x
@@ -290,7 +290,7 @@ class Bullet(FlyingObject):
         self.image = self.image.convert_alpha() # faster blitting with transparent color
         self.rect= self.image.get_rect()
 
-class Tux(FlyingObject):
+class Player(FlyingObject):
     """player-controlled character with relative movement"""
 
     def init2(self):
@@ -317,7 +317,7 @@ class Tux(FlyingObject):
 
     def update(self, seconds):
           self.trail.insert(0, (self.x, self.y))
-          super(Tux,self).update(seconds)
+          super(Player,self).update(seconds)
           if len(self.trail) > 255:
               self.trail.pop(-1) # remove last item
           #self.turn2heading() # use for non-controlled missles etc.
@@ -558,9 +558,9 @@ class PygView(object):
         self.bulletreflectorgroup = pygame.sprite.Group()       # for collision detection etc.
         self.hitpointbargroup = pygame.sprite.Group()
         self.bulletgroup = pygame.sprite.Group()
-        self.tuxgroup = pygame.sprite.Group()
+        self.playergroup = pygame.sprite.Group()
         # ----- assign Sprite class to sprite Groups -------
-        Tux.groups = self.allgroup, self.tuxgroup
+        Player.groups = self.allgroup, self.playergroup
         Hitpointbar.groups = self.hitpointbargroup
         Ball.groups = self.allgroup, self.ballgroup # each Ball object belong to those groups
         Bullet.groups = self.allgroup, self.bulletgroup
@@ -579,16 +579,16 @@ class PygView(object):
         self.reflect4.image=PygView.images[6]
         self.ball1 = Ball(x=100, y=100) # creating a Ball Sprite
         self.ball2 = Ball(x=200, y=100) # create another Ball Sprite
-        self.tux1 = Tux(x=self.grid*1.5+self.grid//1, y=self.grid*1.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0,angle = 180)
-        self.tux2 = Tux(x=self.grid*12+self.grid//2, y=self.grid*11+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
-        self.tux3 = Tux(x=self.grid*0.5+self.grid//1, y=self.grid*11.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=7) 
-        self.tux4 = Tux(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 8,angle = 180)
+        self.player1 = Player(x=self.grid*1.5+self.grid//1, y=self.grid*1.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=0,angle = 180)
+        self.player2 = Player(x=self.grid*12+self.grid//2, y=self.grid*11+self.grid//2, dx=0, dy=0, layer=5, imagenr = 1)
+        self.player3 = Player(x=self.grid*0.5+self.grid//1, y=self.grid*11.5+self.grid//1, dx=0, dy=0, layer=5, imagenr=7) 
+        self.player4 = Player(x=self.grid*11+self.grid//2, y=self.grid*1+self.grid//2, dx=0, dy=0, layer=5, imagenr = 8,angle = 180)
         # over balls layer
         # ---- assign sound effects to sprites -----
-        self.tux1.wallsound = bumpsound
-        self.tux2.wallsound = bumpsound
-        self.tux3.wallsound = bumpsound
-        self.tux4.wallsound = bumpsound
+        self.player1.wallsound = bumpsound
+        self.player2.wallsound = bumpsound
+        self.player3.wallsound = bumpsound
+        self.player4.wallsound = bumpsound
 
     def run(self):
         """The mainloop"""
@@ -611,7 +611,7 @@ class PygView(object):
             # ------ write text below sprites -------
             write(self.screen, "FPS: {:6.3}  PLAYTIME: {:6.3} SECONDS".format(
                            self.clock.get_fps(), self.playtime), y=20, color = (28, 232, 221))
-            #write(self.screen, "player1: {}".format(self.tux1.nextmove), y=70)
+            #write(self.screen, "player1: {}".format(self.player1.nextmove), y=70)
             # ----- turn indicator
             #write(self.screen, "next turn in {:6.3} seconds".format(self.turn_duration - self.turntime), y=20,color = (100, 0, 200))
             #pygame.draw.rect(self.screen, (0,200,0), (351,300, int(43*(self.turn_duration - self.turntime)), 100))
@@ -628,91 +628,91 @@ class PygView(object):
                         Ball(x=random.randint(0,PygView.width-100)) # add big balls!
                     if event.key == pygame.K_c:
                         Bullet(radius=5, x=0,y=0, dx=200, dy=200, color=(255,0,0))
-                    #if event.key == pygame.K_SPACE: # fire forward from tux1 with 3000 speed
-                        #Bullet(radius=5, x=self.tux1.x, y=self.tux1.y,
-                               #dx=-math.sin(self.tux1.angle*GRAD)*3000,
-                               #dy=-math.cos(self.tux1.angle*GRAD)*3000,
-                               #bossnumber=self.tux1.number,
+                    #if event.key == pygame.K_SPACE: # fire forward from player1 with 3000 speed
+                        #Bullet(radius=5, x=self.player1.x, y=self.player1.y,
+                               #dx=-math.sin(self.player1.angle*GRAD)*3000,
+                               #dy=-math.cos(self.player1.angle*GRAD)*3000,
+                               #bossnumber=self.player1.number,
                                #color = (0,0,255))
                         #self.shootsound.play()
-                    #if event.key == pygame.K_m: # fire forward from tux2 with 3000 speed
-                        #Bullet(radius=5, x=self.tux2.x, y=self.tux2.y,
-                               #dx=-math.sin(self.tux2.angle*GRAD)*3000,
-                               #dy=-math.cos(self.tux2.angle*GRAD)*3000,
-                               #bossnumber=self.tux2.number,
+                    #if event.key == pygame.K_m: # fire forward from player2 with 3000 speed
+                        #Bullet(radius=5, x=self.player2.x, y=self.player2.y,
+                               #dx=-math.sin(self.player2.angle*GRAD)*3000,
+                               #dy=-math.cos(self.player2.angle*GRAD)*3000,
+                               #bossnumber=self.player2.number,
                                #color = (0,0,255))
                         #self.shootsound.play()
                     # -------- keys for player1 ------------
                     if event.key == pygame.K_w:
-                        self.tux1.nextmove = "Up"
-                        #self.tux1.angle = 0
+                        self.player1.nextmove = "Up"
+                        #self.player1.angle = 0
                     if event.key == pygame.K_s:
-                        self.tux1.nextmove = "Down"
-                        #self.tux1.angle = 180
+                        self.player1.nextmove = "Down"
+                        #self.player1.angle = 180
                     if event.key == pygame.K_a:
-                        self.tux1.nextmove = "Left"
-                        #self.tux1.angle = 90
+                        self.player1.nextmove = "Left"
+                        #self.player1.angle = 90
                     if event.key == pygame.K_d:
-                        self.tux1.nextmove = "Right"
-                        #self.tux1.angle = 270
+                        self.player1.nextmove = "Right"
+                        #self.player1.angle = 270
                     if event.key == pygame.K_SPACE:
-                        self.tux1.nextmove = "shoot"
+                        self.player1.nextmove = "shoot"
                     if event.key == pygame.K_UP:
-                        self.tux2.nextmove = "Up"
-                        #self.tux2.angle = 0
+                        self.player2.nextmove = "Up"
+                        #self.player2.angle = 0
                     if event.key == pygame.K_DOWN:
-                        self.tux2.nextmove = "Down"
-                        #self.tux2.angle = 180
+                        self.player2.nextmove = "Down"
+                        #self.player2.angle = 180
                     if event.key == pygame.K_LEFT:
-                        self.tux2.nextmove = "Left"
-                        #self.tux2.angle = 90
+                        self.player2.nextmove = "Left"
+                        #self.player2.angle = 90
                     if event.key == pygame.K_RIGHT:
-                        self.tux2.nextmove = "Right"
+                        self.player2.nextmove = "Right"
                         
                     if event.key == pygame.K_KP8:
-                        self.tux3.nextmove = "Up"
-                        #self.tux1.angle = 0
+                        self.player3.nextmove = "Up"
+                        #self.player1.angle = 0
                     if event.key == pygame.K_KP2:
-                        self.tux3.nextmove = "Down"
-                        #self.tux1.angle = 180
+                        self.player3.nextmove = "Down"
+                        #self.player1.angle = 180
                     if event.key == pygame.K_KP4:
-                        self.tux3.nextmove = "Left"
-                        #self.tux1.angle = 90
+                        self.player3.nextmove = "Left"
+                        #self.player1.angle = 90
                     if event.key == pygame.K_KP6:
-                        self.tux3.nextmove = "Right"
-                        #self.tux1.angle = 270
+                        self.player3.nextmove = "Right"
+                        #self.player1.angle = 270
                     if event.key == pygame.K_SPACE:
-                        self.tux4.nextmove = "shoot"
+                        self.player4.nextmove = "shoot"
                     if event.key == pygame.K_i:
-                        self.tux4.nextmove = "Up"
-                        #self.tux2.angle = 0
+                        self.player4.nextmove = "Up"
+                        #self.player2.angle = 0
                     if event.key == pygame.K_k:
-                        self.tux4.nextmove = "Down"
-                        #self.tux2.angle = 180
+                        self.player4.nextmove = "Down"
+                        #self.player2.angle = 180
                     if event.key == pygame.K_j:
-                        self.tux4.nextmove = "Left"
-                        #self.tux2.angle = 90
+                        self.player4.nextmove = "Left"
+                        #self.player2.angle = 90
                     if event.key == pygame.K_l:
-                        self.tux4.nextmove = "Right"
-                        #self.tux2.angle = 270
+                        self.player4.nextmove = "Right"
+                        #self.player2.angle = 270
 
 
             # ------ pressed keys key handler ------------
             #pressedkeys = pygame.key.get_pressed()
-            #self.tux1.ddx = 0 # reset movement
-            #self.tux1.ddy = 0
+            #self.player1.ddx = 0 # reset movement
+            #self.player1.ddy = 0
             #if pressedkeys[pygame.K_w]: # forward
-            #     self.tux1.forward()
+            #     self.player1.forward()
             #if pressedkeys[pygame.K_s]: # backward
-            #     self.tux1.backward()
+            #     self.player1.backward()
             #if pressedkeys[pygame.K_a]: # turn left
-            #    self.tux1.turnleft()
+            #    self.player1.turnleft()
             #if pressedkeys[pygame.K_d]: # turn right
-            #    self.tux1.turnright()
+            #    self.player1.turnright()
             #if pressedkeys[pygame.K_e]: # strafe right
-            #    self.tux1.straferight()
+            #    self.player1.straferight()
             #if pressedkeys[pygame.K_q]: # strafe left
-            #    self.tux1.strafeleft()
+            #    self.player1.strafeleft()
 
             # -------- collision detection ---------
             # you can use: pygame.sprite.collide_rect, pygame.sprite.collide_circle, pygame.sprite.collide_mask
@@ -735,21 +735,21 @@ class PygView(object):
             #    for otherbullet in crashgroup:
             #        if bullet.number > otherbullet.number:
             #             elastic_collision(bullet, otherball) # change dx and dy of both sprites
-            # --------- collision detection between Tux and balls
-            for tux in self.tuxgroup:
-                crashgroup = pygame.sprite.spritecollide(tux, self.ballgroup, False, pygame.sprite.collide_circle)
+            # --------- collision detection between Player and balls
+            for player in self.playergroup:
+                crashgroup = pygame.sprite.spritecollide(player, self.ballgroup, False, pygame.sprite.collide_circle)
                 for otherball in crashgroup:
-                    #elastic_collision(tux, otherball)
-                    tux.hitpoints -= otherball.damage
-                    otherball.hitpoints -= tux.damage
-            # ------------ collision detection between Tux and bullets
-            for tux in self.tuxgroup:
-                crashgroup = pygame.sprite.spritecollide(tux, self.bulletgroup, False, pygame.sprite.collide_circle)
+                    #elastic_collision(player, otherball)
+                    player.hitpoints -= otherball.damage
+                    otherball.hitpoints -= player.damage
+            # ------------ collision detection between Player and bullets
+            for player in self.playergroup:
+                crashgroup = pygame.sprite.spritecollide(player, self.bulletgroup, False, pygame.sprite.collide_circle)
                 for otherbullet in crashgroup:
-                    # tux is not damaged by his own bullets
-                    if otherbullet.bossnumber != tux.number:
-                        #elastic_collision(tux, otherbullet)
-                        tux.hitpoints -= otherbullet.damage
+                    # player is not damaged by his own bullets
+                    if otherbullet.bossnumber != player.number:
+                        #elastic_collision(player, otherbullet)
+                        player.hitpoints -= otherbullet.damage
                         otherbullet.kill()
 
             # ----------- collision detection between bullet and Square --------  # Aristide !
@@ -804,18 +804,18 @@ class PygView(object):
             #pygame.draw.rect(self.screen, (0,200,0), (351,300, int(-43*(self.turn_duration - self.turntime)), 100))
             # ------------ execute turn --------
             if self.nextturn:
-                for tux in self.tuxgroup:
-                    tux.make_move()
+                for player in self.playergroup:
+                    player.make_move()
             #if self.nextturn:
-            #    for tux2 in self.tuxgroup:
-            #        tux2.make_move()
+            #    for player2 in self.playergroup:
+            #        player2.make_move()
 
 
-            #  -------- draw trail for tux ----
+            #  -------- draw trail for player ----
             color = 255
-            oldx = self.tux1.x
-            oldy = self.tux1.y
-            for pos in self.tux1.trail:
+            oldx = self.player1.x
+            oldy = self.player1.y
+            for pos in self.player1.trail:
                 # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
                 pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
                 oldx = pos[0]
@@ -823,9 +823,9 @@ class PygView(object):
                 color-=1
             # neu !!!!!
             color = 255
-            oldx = self.tux2.x
-            oldy = self.tux2.y
-            for pos in self.tux2.trail:
+            oldx = self.player2.x
+            oldy = self.player2.y
+            for pos in self.player2.trail:
                 # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
                 pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
                 oldx = pos[0]
@@ -833,9 +833,9 @@ class PygView(object):
                 color-=1
             #
             color = 255
-            oldx = self.tux3.x
-            oldy = self.tux3.y
-            for pos in self.tux3.trail:
+            oldx = self.player3.x
+            oldy = self.player3.y
+            for pos in self.player3.trail:
                 # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
                 pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
                 oldx = pos[0]
@@ -843,9 +843,9 @@ class PygView(object):
                 color-=1
             #
             color = 255
-            oldx = self.tux4.x
-            oldy = self.tux4.y
-            for pos in self.tux4.trail:
+            oldx = self.player4.x
+            oldy = self.player4.y
+            for pos in self.player4.trail:
                 # pygame.draw.line(surface, color, (startx, starty), (endx, endy), width=1)
                 pygame.draw.line(self.screen, (0,0,color), (oldx, oldy), (pos[0],pos[1]), color // 100 +1)
                 oldx = pos[0]
