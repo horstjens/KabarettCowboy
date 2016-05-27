@@ -474,8 +474,6 @@ class PygView(object):
         self.fps = fps
         self.playtime = 0.0
         #self.font = pygame.font.SysFont('mono', 24, bold=True)
-
-
         PygView.verbot=(
             (self.grid*4+self.grid//2,self.grid*3+self.grid//2),
             (self.grid*4+self.grid//2,self.grid*4+self.grid//2),
@@ -497,8 +495,18 @@ class PygView(object):
             (self.grid*6+self.grid//2,self.grid*7+self.grid//2),
             (self.grid*7+self.grid//2,self.grid*6+self.grid//2),
             (self.grid*7+self.grid//2,self.grid*7+self.grid//2))
-
         self.loadresources()
+        # Joystick
+        # Get count of joysticks
+        self.joystick_count = pygame.joystick.get_count()
+
+        # textPrint.print(screen, "Number of joysticks: {}".format(joystick_count) )
+        # textPrint.indent()
+    
+        # For each joystick:
+        for i in range(self.joystick_count):
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
 
     def loadresources(self):
         """painting on the surface (once) and create sprites"""
@@ -620,6 +628,62 @@ class PygView(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                elif event.type == pygame.JOYHATMOTION:
+                    # ------- Joystick steuerung -------
+                    # Hat switch. All or nothing for direction, not like joysticks.
+                    # Value comes back in an array.
+                    for j in range(self.joystick_count):
+                        joystick = pygame.joystick.Joystick(j)
+                        hats = joystick.get_numhats()
+                        #textPrint.print(screen, "Number of hats: {}".format(hats) )
+                        #textPrint.indent()
+
+                        for i in range( hats ):
+                            hat = joystick.get_hat( i )
+                            # textPrint.print(screen, "Hat {} value: {}".format(i, str(hat)) )
+                            # i 0 = joystick 0 usw.
+                            # print(hat) #  (0,1 = oben, 0,-1 = unten, 1,0 = rechts, -1,0 = links)
+                            # ------- Player 4 ,Joystick 1 , j 0 -------
+                            if hat == (0,1) and i == 0 and j == 0:
+                                self.player4.nextmove = "Up"
+                            if hat == (0,-1) and i == 0 and j == 0:
+                                self.player4.nextmove = "Down"
+                            if hat == (-1,0) and i == 0 and j == 0:
+                                self.player4.nextmove = "Left"
+                            if hat == (1,0) and i == 0 and j == 0:
+                                self.player4.nextmove = "Right"
+                            
+                            # ------- Player 3, Joystick 2, j 1 -------
+                            if hat == (0,1) and i == 0 and j == 1:
+                                self.player3.nextmove = "Up"
+                            if hat == (0,-1) and i == 0 and j == 1:
+                                self.player3.nextmove = "Down"
+                            if hat == (-1,0) and i == 0 and j == 1:
+                                self.player3.nextmove = "Left"
+                            if hat == (1,0) and i == 0 and j == 1:
+                                self.player3.nextmove = "Right"
+                                
+                            # ------- Player 2, Joystick 3, j 2 -------
+                            if hat == (0,1) and i == 0 and j == 2:
+                                self.player2.nextmove = "Up"
+                            if hat == (0,-1) and i == 0 and j == 2:
+                                self.player2.nextmove = "Down"
+                            if hat == (-1,0) and i == 0 and j == 2:
+                                self.player2.nextmove = "Left"
+                            if hat == (1,0) and i == 0 and j == 2:
+                                self.player2.nextmove = "Right"
+                                
+                            # ------- Player 1, Joystick 4, j 3 -------
+                            if hat == (0,1) and i == 0 and j == 3:
+                                self.player1.nextmove = "Up"
+                            if hat == (0,-1) and i == 0 and j == 3:
+                                self.player1.nextmove = "Down"
+                            if hat == (-1,0) and i == 0 and j == 3:
+                                self.player1.nextmove = "Left"
+                            if hat == (1,0) and i == 0 and j == 3:
+                                self.player1.nextmove = "Right"
+                        
+                        
                 elif event.type == pygame.KEYDOWN:
                     # ------- press and release key handler -------
                     if event.key == pygame.K_ESCAPE:
@@ -635,7 +699,7 @@ class PygView(object):
                                #bossnumber=self.player1.number,
                                #color = (0,0,255))
                         #self.shootsound.play()
-                    #if event.key == pygame.K_m: # fire forward from player2 with 3000 speed
+                    #if event.key == pygame.K_m: # fire forward from player2 with 3000 speedJOYHATMOTION
                         #Bullet(radius=5, x=self.player2.x, y=self.player2.y,
                                #dx=-math.sin(self.player2.angle*GRAD)*3000,
                                #dy=-math.cos(self.player2.angle*GRAD)*3000,
@@ -655,6 +719,7 @@ class PygView(object):
                     if event.key == pygame.K_d:
                         self.player1.nextmove = "Right"
                         #self.player1.angle = 270
+                        
                     if event.key == pygame.K_SPACE:
                         self.player1.nextmove = "shoot"
                     if event.key == pygame.K_UP:
@@ -668,6 +733,7 @@ class PygView(object):
                         #self.player2.angle = 90
                     if event.key == pygame.K_RIGHT:
                         self.player2.nextmove = "Right"
+                        #self.player1.angle = 270
                         
                     if event.key == pygame.K_KP8:
                         self.player3.nextmove = "Up"
@@ -681,6 +747,7 @@ class PygView(object):
                     if event.key == pygame.K_KP6:
                         self.player3.nextmove = "Right"
                         #self.player1.angle = 270
+                        
                     if event.key == pygame.K_SPACE:
                         self.player4.nextmove = "shoot"
                     if event.key == pygame.K_i:
