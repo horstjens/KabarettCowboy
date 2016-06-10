@@ -52,7 +52,8 @@ class FlyingObject(pygame.sprite.Sprite):
         self.y = y
         self.dx = dx        
         self.dy = dy
-        self.ddx = 0         self.ddy = 0
+        self.ddx = 0         
+        self.ddy = 0
         self.killwall=False
         self.friction = friction # 1.0 means no friction at all
         if color is None: # create random color if no color is given
@@ -727,30 +728,38 @@ class PygView(object):
                         if bullet.dx > 0:
                             bullet.dy = bullet.dx
                             bullet.dx = 0
+                            bullet.x, bullet.y = triangle.x, triangle.y
                         elif bullet.dy < 0:
                             bullet.dx = bullet.dy
                             bullet.dy = 0
+                            bullet.x, bullet.y = triangle.x, triangle.y
                     if triangle.angle == 90:   # rightdown
                         if bullet.dx < 0:
                             bullet.dy = -bullet.dx
                             bullet.dx = 0
+                            bullet.x, bullet.y = triangle.x, triangle.y
                         elif bullet.dy < 0:
                             bullet.dx = -bullet.dy
                             bullet.dy = 0
+                            bullet.x, bullet.y = triangle.x, triangle.y
                     if triangle.angle == 180:  # rightup
                         if bullet.dy > 0:
                             bullet.dx = bullet.dy
                             bullet.dy = 0
+                            bullet.x, bullet.y = triangle.x, triangle.y
                         elif bullet.dx < 0:
                             bullet.dy = bullet.dx
                             bullet.dx = 0
+                            bullet.x, bullet.y = triangle.x, triangle.y
                     if triangle.angle == 270:  # leftup
                         if bullet.dx > 0:
                             bullet.dy = -bullet.dx
                             bullet.dx = 0
+                            bullet.x, bullet.y = triangle.x, triangle.y
                         elif bullet.dy > 0:
                             bullet.dx = -bullet.dy
                             bullet.dy = 0
+                            bullet.x, bullet.y = triangle.x, triangle.y
                         
             # 
             # ----------- clear, draw , update, flip -----------------  
