@@ -54,11 +54,8 @@ class FlyingObject(pygame.sprite.Sprite):
         self.y = y
         self.dx = dx         # movement
         self.dy = dy
-<<<<<<< HEAD
-        self.ddx = 0         
-=======
         self.ddx = 0 # acceleration and slowing down. set dx and dy to 0 first!
->>>>>>> upstream/master
+
         self.ddy = 0
         self.killwall=False
         self.friction = friction # 1.0 means no friction at all
@@ -865,16 +862,8 @@ class PygView(object):
                         elif bullet.dy > 0:
                             bullet.dx = -bullet.dy
                             bullet.dy = 0
-<<<<<<< HEAD
+
                             bullet.x, bullet.y = triangle.x, triangle.y
-                        
-            # 
-            # ----------- clear, draw , update, flip -----------------  
-=======
-
-
-            # ----------- clear, draw , update, flip -----------------
->>>>>>> upstream/master
             #self.allgroup.clear(screen, background)
             self.bulletreflectorgroup.update(seconds) # would also work with ballgroup
             self.bulletreflectorgroup.draw(self.screen)
